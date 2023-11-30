@@ -1,0 +1,34 @@
+GSE164073:
+- control:
+    title: Cornea
+    characteristics_ch1: mock
+  treatment:
+    title: Cornea
+    characteristics_ch1: SARS-CoV-2
+- control:
+    title: Limbus
+    characteristics_ch1: mock
+  treatment:
+    title: Limbus
+    characteristics_ch1: SARS-CoV-2
+- control:
+    geo_accession: ^GSM499609[6-8]$
+  treatment:
+    geo_accession: ^GSM4996099$|^GSM4996100$|^GSM4996101$
+GSE63966:
+- control:
+    title: LP-C
+  treatment:
+    title: LP-A
+- control:
+    title: HM3-C
+  treatment:
+    title: HM3-A
+- control:
+    title: HPM3-C
+  treatment:
+    title: HPM3-A
+- control:
+    title: HPM4-C
+  treatment:
+    title: HPM4-A
