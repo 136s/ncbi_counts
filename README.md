@@ -41,6 +41,15 @@ To create a mock vs. CoV2 comparison pair for each tissues from [GSE164073](http
 > [!NOTE]
 > The acceptable options for Sample attributes (such as 'title' and 'characteristics_ch1') can be found on the [Sample Attributes](https://www.ncbi.nlm.nih.gov/geo/info/soft.html#sample_tab) table or [SOFT download](https://www.ncbi.nlm.nih.gov/geo/info/soft.html#download) section in [SOFT submission instructions](https://www.ncbi.nlm.nih.gov/geo/info/soft.html) page.
 > You can use the values in the 'Label' column of the table as a key in the YAML file. Also, please exclude the string '!Sample_'.
+>
+> If you want a comprehensive list of attributes for all samples in a series, [`GEOparse` library](https://geoparse.readthedocs.io/en/latest/GEOparse.html#GEOparse.GEOTypes.GSE.phenotype_data) is useful.
+>
+> ```python
+>  import GEOparse
+>  GEOparse.get_GEO("GSExxxxx").phenotype_data
+> ```
+>
+> Columns in this table can be used as attribute values.
 
 ```sample_regex.yaml
 GSE164073: !!seq
