@@ -39,7 +39,7 @@ options:
 To create a mock vs. CoV2 comparison pair for each tissues from [GSE164073](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164073), please prepare the following yaml file (but do not need words beginning with "!!" as they are type hints):
 
 > [!NOTE]
-> The acceptable options for Sample attributes (such as 'title' and 'characteristics_ch1') can be found on the [SOFT submission instructions](https://www.ncbi.nlm.nih.gov/geo/info/soft.html#sample_tab) page.
+> The acceptable options for Sample attributes (such as 'title' and 'characteristics_ch1') can be found on the [Sample Attributes](https://www.ncbi.nlm.nih.gov/geo/info/soft.html#sample_tab) table or [SOFT download](https://www.ncbi.nlm.nih.gov/geo/info/soft.html#download) section in [SOFT submission instructions](https://www.ncbi.nlm.nih.gov/geo/info/soft.html) page.
 > You can use the values in the 'Label' column of the table as a key in the YAML file. Also, please exclude the string '!Sample_'.
 
 ```sample_regex.yaml
