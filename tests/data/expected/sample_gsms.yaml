@@ -1,0 +1,50 @@
+GSE164073:
+- control:
+  - GSM4996084
+  - GSM4996085
+  - GSM4996086
+  treatment:
+  - GSM4996087
+  - GSM4996088
+  - GSM4996089
+- control:
+  - GSM4996090
+  - GSM4996091
+  - GSM4996092
+  treatment:
+  - GSM4996093
+  - GSM4996094
+  - GSM4996095
+- control:
+  - GSM4996096
+  - GSM4996097
+  - GSM4996098
+  treatment:
+  - GSM4996099
+  - GSM4996100
+  - GSM4996101
+GSE63966:
+- control:
+  - GSM1561390
+  - GSM1561391
+  treatment:
+  - GSM1561392
+  - GSM1561393
+- control:
+  - GSM1561394
+  - GSM1561395
+  treatment:
+  - GSM1561396
+  - GSM1561397
+- control:
+  - GSM1561398
+  - GSM1561399
+  treatment:
+  - GSM1561400
+  - GSM1561401
+- control:
+  - GSM1561402
+  - GSM1561403
+  treatment:
+  - GSM1561404
+  - GSM1561405
