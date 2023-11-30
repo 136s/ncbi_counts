@@ -11,6 +11,7 @@ Groups = Literal["treatment", "control"] | str
 PairRegex = dict[Groups, dict[str, str]]
 GeoRegex = dict[GseAcc, list[PairRegex]]
 PairGsms = dict[Groups, list[GsmAcc]]
+CountNorm = Literal["fpkm", "tpm"]
 AnnotColumn = Literal[
     "Symbol",
     "Description",

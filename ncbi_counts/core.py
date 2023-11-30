@@ -33,7 +33,7 @@ class Series:
     count: pd.DataFrame = field(init=False, repr=False)
     annot_url: str = field(init=False)
     annot_path: Path = field(init=False)
-    annot: pd.DataFrame = field(init=False, repr=False)
+    annot: pd.DataFrame | None = field(default=None, repr=False)
     pair_count_list: list[pd.DataFrame] = field(
         default_factory=list, init=False, repr=False
     )
@@ -51,8 +51,9 @@ class Series:
         self.match_pair_samples()
         self.set_count_url()
         self.set_count_path()
-        self.set_annot_url()
-        self.set_annot_path()
+        if self.keep_annot:
+            self.set_annot_url()
+            self.set_annot_path()
 
     def generate_pair_matrix(self):
         self.set_count()
@@ -111,9 +112,10 @@ class Series:
         self.annot_path = self.src_dir.joinpath(annot_filename)
 
     def set_annot(self):
-        self.annot = get_count_dataframe(
-            self.annot_url, self.annot_path, silent=self.silent
-        )[self.keep_annot]
+        if self.keep_annot:
+            self.annot = get_count_dataframe(
+                self.annot_url, self.annot_path, silent=self.silent
+            )[self.keep_annot]
 
     def set_pair_count(self):
         for pair_gsms in self.pair_gsms_list:

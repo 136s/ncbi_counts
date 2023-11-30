@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import re
-from typing import Iterable, Literal
+from typing import Iterable
 import warnings
 
 from GEOparse.downloader import Downloader
@@ -10,7 +10,7 @@ from GEOparse.GEOTypes import GSM, HTTPError
 import pandas as pd
 from yaml import safe_dump
 
-from .types import GseAcc, GsmAcc, PairGsms, PairRegex
+from .types import CountNorm, GseAcc, GsmAcc, PairGsms, PairRegex, StrPath
 
 GEO_BASE_URL = "https://www.ncbi.nlm.nih.gov"
 GEO_DOWNLOAD_BASE = GEO_BASE_URL + "/geo/download/?"
@@ -76,14 +76,14 @@ def match_pair_gsms(
 
 def get_count_url(
     gse_acc: GseAcc,
-    norm_type: Literal["fpkm", "tpm"] | None = None,
+    norm_type: CountNorm | None = None,
     annot_ver: str = "GRCh38.p13",
 ) -> str:
     """Get URL of NCBI-generated count file.
 
     Args:
         gse_acc (GseAcc): GSE accession number.
-        norm_type (Literal["fpkm", "tpm"], optional): Normalization type. Defaults to None.
+        norm_type (CountNorm, optional): Normalization type. Defaults to None.
         annot_ver (str, optional): Annotation version. Defaults to "GRCh38.p13".
 
     Returns:
@@ -213,14 +213,13 @@ def construct_pair_count(
                     f" (dropped: {sorted(list(set(gsms) - gsms_in_count))}))"
                 )
             group_df_list.append(count[list(gsms_in_count)].add_prefix(group + sep))
-    return (
-        pd.concat(group_df_list, axis=1)
-        .sort_index()
-        .set_index(annot.columns.tolist(), append=True)
-    )
+    pair_count = pd.concat(group_df_list, axis=1).sort_index()
+    if annot is not None:
+        pair_count.set_index(annot.columns.tolist(), append=True, inplace=True)
+    return pair_count
 
 
-def save_yaml(d: dict, yaml_path: Path):
-    yaml_path.parent.mkdir(parents=True, exist_ok=True)
+def save_yaml(d: dict, yaml_path: StrPath):
+    Path(yaml_path).parent.mkdir(parents=True, exist_ok=True)
     with open(yaml_path, "w") as f:
         safe_dump(d, f)
