@@ -32,7 +32,7 @@ class Series:
     count_path: Path = field(init=False)
     count: pd.DataFrame = field(init=False, repr=False)
     annot_url: str = field(init=False)
-    annot_path: Path = field(init=False)
+    annot_path: Path | None = field(init=False)
     annot: pd.DataFrame | None = field(default=None, repr=False)
     pair_count_list: list[pd.DataFrame] = field(
         default_factory=list, init=False, repr=False
@@ -51,9 +51,8 @@ class Series:
         self.match_pair_samples()
         self.set_count_url()
         self.set_count_path()
-        if self.keep_annot:
-            self.set_annot_url()
-            self.set_annot_path()
+        self.set_annot_url()
+        self.set_annot_path()
 
     def generate_pair_matrix(self):
         self.set_count()
@@ -105,11 +104,17 @@ class Series:
             raise ValueError("Could not load count matrix")
 
     def set_annot_url(self):
-        self.annot_url = get_annot_url(annot_ver=self.count_annot_ver)
+        if self.keep_annot:
+            self.annot_url = get_annot_url(annot_ver=self.count_annot_ver)
+        else:
+            self.annot_url = ""
 
     def set_annot_path(self):
-        annot_filename = parse_filename_from_url(self.annot_url)
-        self.annot_path = self.src_dir.joinpath(annot_filename)
+        if self.keep_annot:
+            annot_filename = parse_filename_from_url(self.annot_url)
+            self.annot_path = self.src_dir.joinpath(annot_filename)
+        else:
+            self.annot_path = None
 
     def set_annot(self):
         if self.keep_annot:

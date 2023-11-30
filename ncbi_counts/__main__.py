@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from pathlib import Path
+import warnings
 
 from .core import Series
 from .load import load_input
@@ -52,10 +53,13 @@ def main(
             silent=silent,
             str_sep=str_sep,
         )
-        series.generate_pair_matrix()
+        try:
+            series.generate_pair_matrix()
+            if to_yaml is not None:
+                samples_dict[gse] = series.pair_gsms_list
+        except ValueError as e:
+            warnings.warn(f"Series {gse} skipped: {e}")
         series_dict[gse] = series
-        if to_yaml is not None:
-            samples_dict[gse] = series.pair_gsms_list
     if to_yaml is not None:
         save_yaml(samples_dict, Path(to_yaml))
     return series_dict

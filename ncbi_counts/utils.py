@@ -2,11 +2,12 @@
 
 from pathlib import Path
 import re
+from requests.exceptions import HTTPError
 from typing import Iterable
 import warnings
 
 from GEOparse.downloader import Downloader
-from GEOparse.GEOTypes import GSM, HTTPError
+from GEOparse.GEOTypes import GSM
 import pandas as pd
 from yaml import safe_dump
 
