@@ -142,4 +142,6 @@ class Series:
         for pair_count, pair_count_path in zip(
             self.pair_count_list, self.pair_count_path_list
         ):
-            pair_count.to_csv(pair_count_path, sep="\t")
+            pair_count.to_csv(
+                pair_count_path, sep="\t", encoding="utf-8", lineterminator="\n"
+            )

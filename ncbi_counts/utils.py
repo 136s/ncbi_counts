@@ -213,7 +213,9 @@ def construct_pair_count(
                     f"Only {len(gsms_in_count)} GSMs matched for {group} out of {len(gsms)}"
                     f" (dropped: {sorted(list(set(gsms) - gsms_in_count))}))"
                 )
-            group_df_list.append(count[list(gsms_in_count)].add_prefix(group + sep))
+            group_df_list.append(
+                count[sorted(list(gsms_in_count))].add_prefix(group + sep)
+            )
     pair_count = pd.concat(group_df_list, axis=1).sort_index()
     if annot is not None:
         pair_count.set_index(annot.columns.tolist(), append=True, inplace=True)
@@ -222,5 +224,5 @@ def construct_pair_count(
 
 def save_yaml(d: dict, yaml_path: StrPath):
     Path(yaml_path).parent.mkdir(parents=True, exist_ok=True)
-    with open(yaml_path, "w") as f:
-        safe_dump(d, f)
+    with open(yaml_path, "w", encoding="utf-8", newline="\n") as f:
+        safe_dump(d, f, sort_keys=False)
