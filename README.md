@@ -7,7 +7,7 @@ If you just need a count matrix for all samples (GSM) in a series (GSE), this li
 ## Usage
 
 ```sh
-ncbi_counts [-h] [-n NORM] [-a ANNOT_VER] [-k [KEEP_ANNOT ...]] [-s SRC_DIR] [-o OUTPUT] [-q] [-S SEP] [-y GSM_YAML] FILE
+ncbi_counts [-h] [-n NORM] [-a ANNOT_VER] [-k [KEEP_ANNOT ...]] [-s SRC_DIR] [-o OUTPUT] [-q] [-S SEP] [-y GSM_YAML] [-c] FILE
 ```
 
 ### Options
@@ -32,6 +32,7 @@ options:
   -S SEP, --sep SEP     Separator between group and GSM in column (default: -)
   -y GSM_YAML, --yaml GSM_YAML
                         Path to save YAML file which contains GSMs (default: None)
+  -c, --cleanup         If True, remove source files (default: False)
 ```
 
 ### Example
