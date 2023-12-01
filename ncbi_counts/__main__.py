@@ -20,6 +20,7 @@ def main(
     silent: bool = False,
     str_sep: str = "-",
     to_yaml: StrPath = None,
+    cleanup: bool = False,
 ) -> dict[GseAcc, Series]:
     """Generate count matrix for each series.
 
@@ -33,6 +34,7 @@ def main(
         silent (bool, optional): if True, suppress warnings. Defaults to False.
         str_sep (str, optional): separator between group and GSM in column. Defaults to "-".
         to_yaml (StrPath, optional): path to save YAML file. Defaults to None.
+        cleanup (bool, optional): if True, remove source files. Defaults to False.
 
     Returns:
         dict[GseAcc, Series]: a dictionary of Series (value) for each series (key).
@@ -62,6 +64,9 @@ def main(
         series_dict[gse] = series
     if to_yaml is not None:
         save_yaml(samples_dict, Path(to_yaml))
+    if cleanup:
+        for series in series_dict.values():
+            series.cleanup()
     return series_dict
 
 
@@ -77,6 +82,7 @@ if __name__ == "__main__":
     silent: bool = args.silent
     str_sep: str = args.sep
     to_yaml: StrPath = args.yaml
+    cleanup: bool = args.cleanup
 
     series_dict = main(
         geo_regex_path=geo_regex_path,
@@ -88,4 +94,5 @@ if __name__ == "__main__":
         silent=silent,
         str_sep=str_sep,
         to_yaml=to_yaml,
+        cleanup=cleanup,
     )

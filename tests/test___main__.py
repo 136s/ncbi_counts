@@ -48,6 +48,7 @@ def test_main(sample_input: Path) -> None:
     save_to: StrPath | None = "tests/data/count"
     str_sep: str = "-"
     to_yaml: StrPath | None = "tests/data/sample_gsms.yaml"
+    cleanup: bool = True
 
     __main__.main(
         geo_regex_path=geo_regex_path,
@@ -59,9 +60,10 @@ def test_main(sample_input: Path) -> None:
         silent=silent,
         str_sep=str_sep,
         to_yaml=to_yaml,
+        cleanup=cleanup,
     )
 
-    # python -m ncbi_counts -a GRCh38.p13 -k Symbol Description -s tests/data/expected/raw -o tests/data/expected/count -S - -y tests/data/expected/sample_gsms.yaml tests/data/sample_geo_regex.yaml
+    # python -m ncbi_counts -a GRCh38.p13 -k Symbol Description -s tests/data/expected/raw -o tests/data/expected/count -S - -y tests/data/expected/sample_gsms.yaml -c tests/data/sample_geo_regex.yaml
     expected_dir = Path("tests/data/expected")
     for path in expected_dir.glob("**/*.*"):
         actual_path = expected_dir.parent.joinpath(path.relative_to(expected_dir))

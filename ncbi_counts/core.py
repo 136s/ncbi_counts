@@ -46,33 +46,45 @@ class Series:
     def __post_init__(self):
         if not self.gse_acc.startswith("GSE"):
             raise ValueError("GSE accession must start with GSE")
-        self.prepare_dirs()
-        self.set_gse_info()
-        self.match_pair_samples()
-        self.set_count_url()
-        self.set_count_path()
-        self.set_annot_url()
-        self.set_annot_path()
+        self._prepare_dirs()
+        self._set_gse_info()
+        self._match_pair_samples()
+        self._set_count_url()
+        self._set_count_path()
+        self._set_annot_url()
+        self._set_annot_path()
 
     def generate_pair_matrix(self):
-        self.set_count()
-        self.set_annot()
-        self.set_pair_count()
-        self.set_pair_count_path()
+        """Generate pair count matrix for each pair regex."""
+        self._set_count()
+        self._set_annot()
+        self._set_pair_count()
+        self._set_pair_count_path()
         if self.save_to is not None:
-            self.save_pair_count()
+            self._save_pair_count()
 
-    def prepare_dirs(self):
+    def cleanup(self):
+        """Remove downloaded source files."""
+        self.src_dir.joinpath(self.gse_acc + "_family.soft.gz").unlink(missing_ok=True)
+        self.count_path.unlink(missing_ok=True)
+        self.annot_path.unlink(missing_ok=True)
+        try:
+            # Remove src_dir if it is empty
+            self.src_dir.rmdir()
+        except (OSError, FileNotFoundError):
+            pass
+
+    def _prepare_dirs(self):
         self.src_dir = Path(self.src_dir)
         self.src_dir.mkdir(parents=True, exist_ok=True)
         if self.save_to is not None:
             self.save_to = Path(self.save_to)
             self.save_to.mkdir(parents=True, exist_ok=True)
 
-    def set_gse_info(self):
+    def _set_gse_info(self):
         self.gse_info = get_GEO(self.gse_acc, destdir=self.src_dir, silent=self.silent)
 
-    def match_pair_samples(self):
+    def _match_pair_samples(self):
         gsms = self.gse_info.gsms.values()
         matched_regex: list[PairRegex] = []
         for pair_regex in self.pair_regex_list:
@@ -87,49 +99,49 @@ class Series:
                     )
         self.pair_regex_list = matched_regex
 
-    def set_count_url(self):
+    def _set_count_url(self):
         self.count_url = get_count_url(
             self.gse_acc, norm_type=self.count_norm_type, annot_ver=self.count_annot_ver
         )
 
-    def set_count_path(self):
+    def _set_count_path(self):
         count_filename = parse_filename_from_url(self.count_url)
         self.count_path = self.src_dir.joinpath(count_filename)
 
-    def set_count(self):
+    def _set_count(self):
         self.count = get_count_dataframe(
             self.count_url, self.count_path, silent=self.silent
         )
         if self.count is None:
             raise ValueError("Could not load count matrix")
 
-    def set_annot_url(self):
+    def _set_annot_url(self):
         if self.keep_annot:
             self.annot_url = get_annot_url(annot_ver=self.count_annot_ver)
         else:
             self.annot_url = ""
 
-    def set_annot_path(self):
+    def _set_annot_path(self):
         if self.keep_annot:
             annot_filename = parse_filename_from_url(self.annot_url)
             self.annot_path = self.src_dir.joinpath(annot_filename)
         else:
             self.annot_path = None
 
-    def set_annot(self):
+    def _set_annot(self):
         if self.keep_annot:
             self.annot = get_count_dataframe(
                 self.annot_url, self.annot_path, silent=self.silent
             )[self.keep_annot]
 
-    def set_pair_count(self):
+    def _set_pair_count(self):
         for pair_gsms in self.pair_gsms_list:
             pair_count = construct_pair_count(
                 pair_gsms, self.count, annot=self.annot, sep=self.str_sep
             )
             self.pair_count_list.append(pair_count)
 
-    def set_pair_count_path(self, start_index: int = 1):
+    def _set_pair_count_path(self, start_index: int = 1):
         digit = len(self.pair_count_list) // 10 + 1
         for i in range(len(self.pair_count_list)):
             self.pair_count_path_list.append(
@@ -138,7 +150,7 @@ class Series:
                 )
             )
 
-    def save_pair_count(self):
+    def _save_pair_count(self):
         for pair_count, pair_count_path in zip(
             self.pair_count_list, self.pair_count_path_list
         ):

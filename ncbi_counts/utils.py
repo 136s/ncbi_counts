@@ -204,15 +204,18 @@ def construct_pair_count(
     if annot is not None:
         group_df_list.append(annot)
     for group, gsms in pair_gsms.items():
+        # check if GSMs are in count matrix
         gsms_in_count = set(count.columns) & set(gsms)
         if len(gsms_in_count) == 0:
             warnings.warn(f"No GSMs matched for {group}")
         else:
             if len(gsms_in_count) < len(gsms):
+                # warn if some GSMs are not in count matrix
                 warnings.warn(
                     f"Only {len(gsms_in_count)} GSMs matched for {group} out of {len(gsms)}"
                     f" (dropped: {sorted(list(set(gsms) - gsms_in_count))}))"
                 )
+            # append count matrix for GSMs of this group in count matrix
             group_df_list.append(
                 count[sorted(list(gsms_in_count))].add_prefix(group + sep)
             )

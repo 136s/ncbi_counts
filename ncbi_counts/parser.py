@@ -89,4 +89,11 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Path to save YAML file which contains GSMs (default: None)",
     )
+    parser.add_argument(
+        "-c",
+        "--cleanup",
+        default=False,
+        action="store_true",
+        help="If True, remove source files (default: False)",
+    )
     return parser.parse_args()
