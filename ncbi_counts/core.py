@@ -27,13 +27,13 @@ class Series:
     pair_gsms_list: list[PairGsms] = field(default_factory=list, init=False)
     count_norm_type: str | None = field(default=None)
     count_annot_ver: str = field(default="GRCh38.p13")
-    keep_annot: AnnotColumns = field(default_factory=[])
+    keep_annot: AnnotColumns = field(default_factory=list)
     count_url: str = field(init=False)
     count_path: Path = field(init=False)
     count: pd.DataFrame = field(init=False, repr=False)
     annot_url: str = field(init=False)
     annot_path: Path | None = field(init=False)
-    annot: pd.DataFrame | None = field(default=None, repr=False)
+    annot: pd.DataFrame | None = field(init=False, repr=False)
     pair_count_list: list[pd.DataFrame] = field(
         default_factory=list, init=False, repr=False
     )
@@ -59,15 +59,16 @@ class Series:
         self._set_count()
         self._set_annot()
         self._set_pair_count()
-        self._set_pair_count_path()
         if self.save_to is not None:
+            self._set_pair_count_path()
             self._save_pair_count()
 
     def cleanup(self):
         """Remove downloaded source files."""
         self.src_dir.joinpath(self.gse_acc + "_family.soft.gz").unlink(missing_ok=True)
         self.count_path.unlink(missing_ok=True)
-        self.annot_path.unlink(missing_ok=True)
+        if self.annot_path is not None:
+            self.annot_path.unlink(missing_ok=True)
         try:
             # Remove src_dir if it is empty
             self.src_dir.rmdir()
@@ -133,6 +134,8 @@ class Series:
             self.annot = get_count_dataframe(
                 self.annot_url, self.annot_path, silent=self.silent
             )[self.keep_annot]
+        else:
+            self.annot = None
 
     def _set_pair_count(self):
         for pair_gsms in self.pair_gsms_list:
