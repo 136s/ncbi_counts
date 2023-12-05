@@ -4,10 +4,18 @@ Download the [NCBI-generated RNA-seq count data](https://www.ncbi.nlm.nih.gov/ge
 
 If you just need a count matrix for all samples (GSM) in a series (GSE), this library is not needed. However, if you need a count matrix for each GSE, specifying only the control group samples and treatment group samples, this library may be useful.
 
+## Installation
+
+From [PyPI](https://pypi.org/project/ncbi-counts/):
+
+```sh
+pip install ncbi-counts
+```
+
 ## Usage
 
 ```sh
-ncbi_counts [-h] [-n NORM] [-a ANNOT_VER] [-k [KEEP_ANNOT ...]] [-s SRC_DIR] [-o OUTPUT] [-q] [-S SEP] [-y GSM_YAML] [-c] FILE
+python -m ncbi_counts [-h] [-n NORM] [-a ANNOT_VER] [-k [KEEP_ANNOT ...]] [-s SRC_DIR] [-o OUTPUT] [-q] [-S SEP] [-y GSM_YAML] [-c] FILE
 ```
 
 ### Options
@@ -35,7 +43,7 @@ options:
   -c, --cleanup         If True, remove source files (default: False)
 ```
 
-### Example
+### Command-line Example
 
 To create a mock vs. CoV2 comparison pair for each tissues from [GSE164073](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE164073), please prepare the following yaml file (but do not need words beginning with "!!" as they are type hints):
 
@@ -49,8 +57,6 @@ To create a mock vs. CoV2 comparison pair for each tissues from [GSE164073](http
 >  import GEOparse
 >  GEOparse.get_GEO("GSExxxxx").phenotype_data
 > ```
->
-> Columns in this table can be used as attribute values.
 
 ```sample_regex.yaml
 GSE164073: !!seq
@@ -95,7 +101,7 @@ GSE164073: !!seq
 and run the following command ("Symbol" column is kept in this expample):
 
 ```sh
-python -m ncbi_counts sample_regex.yaml -k Symbol
+python -m ncbi_counts sample_regex.yaml -k Symbol -c
 ```
 
 then you will get the following files:
@@ -134,8 +140,39 @@ then you will get the following files:
 
 If you don't need source files from NCBI, please delete the following files:
 
-```sh
-GSE164073_family.soft.gz
-GSE164073_raw_counts_GRCh38.p13_NCBI.tsv.gz
-Human.GRCh38.p13.annot.tsv.gz
+### Example in Python
+
+To get the output as a pandas DataFrame, please refer to the following code:
+
+```python
+from ncbi_counts import Series
+
+series = Series(
+    "GSE164073",
+    [
+        {
+            "control": {"title": "Cornea", "characteristics_ch1": "mock"},
+            "treatment": {"title": "Cornea", "characteristics_ch1": "SARS-CoV-2"},
+        },
+        {
+            "control": {"title": "Limbus", "characteristics_ch1": "mock"},
+            "treatment": {"title": "Limbus", "characteristics_ch1": "SARS-CoV-2"},
+        },
+        {
+            "control": {"geo_accession": "^GSM499609[6-8]$"},
+            "treatment": {"geo_accession": "^GSM4996099$|^GSM4996100$|^GSM4996101$"},
+        },
+    ],
+    keep_annot=["Symbol"],
+    save_to=None,
+)
+series.generate_pair_matrix()
+# series.cleanup()  # remove source files
+series.pair_count_list[0]  # Corresponds to GSE164073-1.tsv
+series.pair_count_list[1]  # Corresponds to GSE164073-2.tsv
+series.pair_count_list[2]  # Corresponds to GSE164073-3.tsv
 ```
+
+## License
+
+ncbi_counts is released under an [MIT license](LICENSE).
