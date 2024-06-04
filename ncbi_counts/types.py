@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Union
 
 
-StrPath = str | Path
+StrPath = Union[str, Path]
 GseAcc = str
 GsmAcc = str
-Groups = Literal["treatment", "control"] | str
+Groups = Union[Literal["treatment", "control"], str]
 PairRegex = dict[Groups, dict[str, str]]
 GeoRegex = dict[GseAcc, list[PairRegex]]
 PairGsms = dict[Groups, list[GsmAcc]]

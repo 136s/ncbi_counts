@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 from pathlib import Path
 from setuptools import setup, find_packages
 
@@ -37,7 +36,7 @@ setup(
     ],
     url="https://github.com/136s/ncbi_counts",
     packages=find_packages(exclude=("tests", "docs")),
-    python_requires=">=3.10.0",
+    python_requires=">=3.9.0",
     install_requires=["GEOparse", "pandas", "PyYAML"],
     extras_require={"dev": ["pytest", "build", "twine"]},
     keywords=["GEO", "Gene Expression Omnibus", "Bioinformatics", "RNA-seq", "NCBI"],
