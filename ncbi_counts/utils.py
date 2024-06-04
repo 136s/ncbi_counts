@@ -90,13 +90,12 @@ def get_count_url(
     Returns:
         str: URL of NCBI-generated count file.
     """
-    match norm_type:
-        case None:
-            count_type = "raw_counts"
-        case "fpkm" | "tpm":
-            count_type = "norm_counts_" + norm_type.upper()
-        case _:
-            raise ValueError("Supported normalization types are 'fpkm' and 'tpm'.")
+    if norm_type is None:
+        count_type = "raw_counts"
+    elif norm_type in ("fpkm", "tpm"):
+        count_type = "norm_counts_" + norm_type.upper()
+    else:
+        raise ValueError("Supported normalization types are 'fpkm' and 'tpm'.")
     return (
         GEO_DOWNLOAD_BASE
         + f"type=rnaseq_counts&acc={gse_acc}&format=file&file={gse_acc}_{count_type}_{annot_ver}_NCBI.tsv.gz"
