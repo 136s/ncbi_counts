@@ -70,12 +70,12 @@ def load_input(input_path: StrPath) -> GeoRegex:
     Returns:
         GeoRegex: Dictionary of regular expressions.
     """
-    match Path(input_path).suffix:
-        case ".yaml" | ".yml":
-            return load_yaml(input_path)
-        case ".csv":
-            return load_csv(input_path)
-        case ".tsv":
-            return load_csv(input_path, sep="\t")
-        case _:
-            raise ValueError("Supported file types are .yaml, .yml, .csv, .tsv.")
+    suf = Path(input_path).suffix
+    if suf in (".yaml" | ".yml"):
+        return load_yaml(input_path)
+    elif suf == ".csv":
+        return load_csv(input_path)
+    elif suf == ".tsv":
+        return load_csv(input_path, sep="\t")
+    else:
+        raise ValueError("Supported file types are .yaml, .yml, .csv, .tsv.")
